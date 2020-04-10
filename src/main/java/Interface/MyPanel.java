@@ -4,125 +4,224 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 
-public class MyPanel extends JPanel implements  Constants, ActionListener {
+public class MyPanel extends JPanel implements Constants, Observer, ActionListener {
 
+    private int counter = 0;
+    private CarRules rule = new CarRules();
     private Graphics2D g2d;
-    private Dimension size;
-    private ArrayList<Timer> timers = new ArrayList<Timer>();
+    private ArrayList<Timer> timers = new ArrayList<Timer>(); //List to initiate Timers.
+    private Color color; //store the color of the vehicle.
+    private String status = statusMsg; //To show the message on the top panel based on the status number.
+    private CarSimulation sim = null;
 
 
     public void paint(Graphics g) {
-
         g2d = (Graphics2D) g;
-        size = getSize();
 
-        g2d.setColor(Color.black);
-        g2d.fillRect(0, 0, size.width, size.height);
+        g2d.setColor(Color.GREEN);
+        g2d.fillRect(0, 0, frameWidth, 100);
+
+        g2d.setColor(Color.gray);
+        //road-1
+        g2d.fillRect(0, 100, frameWidth-50, roadHeight);
+        //road-2
+        g2d.fillRect(0, 500, frameWidth-50, roadHeight);
+        //road-patch
+        g2d.fillRect(1250, 200, roadHeight, 300);
+
+        g2d.setColor(Color.red);
+        g2d.fillRect(1000, 160, 30, 30);
+        g2d.fillRect(950, 160, 30, 30);
+
+
 
         Stroke dashedLane = new BasicStroke(3, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{9}, 0);
-
-        g2d.setColor(Color.white);
+        g2d.setColor(Color.getHSBColor(148,93,20));
         g2d.setStroke(dashedLane);
-        g2d.drawLine(0, size.height / 2, size.width, size.height / 2);
+        //road-1 line
+        g2d.drawLine(0, 150, frameWidth - 100, 150);
+        //road-2 line
+        g2d.drawLine(0, 550, frameWidth - 100, 550);
+        //patch line
+        g2d.drawLine(1300, 150, 1300, 550);
 
-        startSimulation();
 
+        g2d.setColor(Color.GREEN);
+        g2d.fillRect(0, 100+roadHeight, frameWidth - 150, 300);
+        g2d.fillRect(0, 500+roadHeight, frameWidth, 300);
+        g2d.fillRect(1250+roadHeight, 100, frameWidth, frameHeight);
+
+
+        g2d.fillRect(1100, 510, vehicleWidth, vehicleHeight );
+
+
+        createVehiclesByVehicleInstances();
     }
 
-    public void startSimulation() {
+    private void createVehiclesByVehicleInstances(){
 
-        for (int i = 0; i < lane1.size(); i++) {
-            g2d.setColor(Color.orange);
-            g2d.fillRoundRect(lane1.get(i).getVehLocation(), firstLaneY, Integer.parseInt(lane1.get(i).getVehWidth()),
-                    Integer.parseInt(lane1.get(i).getVehHeight()), roundRectHW, roundRectHW);
-        }
-        for (int i = 0; i < lane2.size(); i++) {
-            g2d.setColor(Color.orange);
-            g2d.fillRoundRect(lane2.get(i).getVehLocation(), secondLaneY, Integer.parseInt(lane2.get(i).getVehWidth()),
-                    Integer.parseInt(lane2.get(i).getVehHeight()), roundRectHW, roundRectHW);
-        }
+        ArrayList<Car> allVehicles = new ArrayList<Car>();
+        allVehicles.addAll(lane1);
+        allVehicles.addAll(lane2);
 
-    }
-
-    public void initTimers() {
-        for (int i = 1; i <= 8; i++) {
-            if (i == 1 ){
-                Timer tm = new Timer(10, this);
-                tm.setActionCommand(Integer.toString(i));
-                tm.setDelay(10);
-                timers.add(tm);
-            }
-            else if(i == 2){
-                Timer tm = new Timer(20, this);
-                tm.setActionCommand(Integer.toString(i));
-                tm.setDelay(10);
-                timers.add(tm);
-            }
-            else if (i == 3 ){
-                Timer tm = new Timer(30, this);
-                tm.setActionCommand(Integer.toString(i));
-                tm.setDelay(10);
-                timers.add(tm);
-            }
-            else if (i == 4) {
-                Timer tm = new Timer(20, this);
-                tm.setActionCommand(Integer.toString(i));
-                tm.setDelay(20);
-                timers.add(tm);
-            }
+        for(int i =0; i<allVehicles.size(); i++) {
+            drawRectangle(allVehicles.get(i), Color.pink);
         }
     }
 
-    public void startTimer() {
-        for (Timer timer : timers) {
-            timer.start();
+    //Method to create vehicles in the respective lanes.
+    private void drawRectangle(Car vehicle, Color color){
+
+//        AffineTransform tx = new AffineTransform();
+//        if(vehicle.isRotate()){
+//            //rotate the vehicle and prepare to turn.
+//            int dx = -20;
+//            int dy = 40;
+//            tx.translate(vehicle.getVehLocationX() + dx, vehicle.getVehLocationY() + dy);
+//            tx.rotate(80.1);
+//            Rectangle rect = new Rectangle(dx, dy, vehicle.getVehWidth(), vehicle.getVehHeight());
+//            g2d.setTransform(tx);
+//            g2d.setColor(color);
+//            g2d.fill(rect);
+//
+//        }else {
+//            //rotate back to move in a straight line
+//            tx.translate(0, 0);
+            Rectangle rect = new Rectangle(vehicle.getVehLocationX(), vehicle.getVehLocationY(),
+                    vehicle.getVehWidth(), vehicle.getVehHeight());
+//            g2d.setTransform(tx);
+            g2d.setColor(color);
+            g2d.fill(rect);
+
+    }
+
+
+    @Override
+    public void update(Observable observable, Object o) {
+        if (o instanceof CarSimulation) {
+            sim = (CarSimulation) o;
+            if(sim.getCtr() == 1)
+            {
+                initTimers();
+            }
+        }
+    }
+
+
+    private void initTimers(){
+        for(int i=1; i<=numberOfVehicles; i++) {
+            Timer tm = new Timer(80, this);
+            tm.setActionCommand(Integer.toString(i));
+            timers.add(tm);
+            tm.start();
         }
     }
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
-        if (actionEvent.getActionCommand().equals("1")) {
-            int x = lane1.get(0).getVehLocation();
-            int velX = 3;
-            if (x > 1300) {
-                x = 0;
-                lane1.get(0).setVehLocation(0);
-            }
-            x = x + velX;
-            lane1.get(0).setVehLocation(x);
-            repaint();
-        } else if (actionEvent.getActionCommand().equals("2")) {
-            int x = lane1.get(1).getVehLocation();
-            int velX = 1;
-            if (x > 1300) {
-                x = 0;
-                lane1.get(1).setVehLocation(0);
-            }
-            x = x + velX;
-            lane1.get(1).setVehLocation(x);
-            repaint();
-        } else if (actionEvent.getActionCommand().equals("3")) {
-            int x = lane2.get(0).getVehLocation();
-            int velX = 2;
-            if (x > 1300) {
-                x = 0;
-                lane2.get(0).setVehLocation(0);
-            }
-            x = x + velX;
-            lane2.get(0).setVehLocation(x);
-            repaint();
-        } else if (actionEvent.getActionCommand().equals("4")) {
-            int x = lane2.get(1).getVehLocation();
-            int velX = 1;
-            if (x > 1300) {
-                x = 0;
-                lane2.get(1).setVehLocation(0);
-            }
-            x = x + velX;
-            lane2.get(1).setVehLocation(x);
-            repaint();
+        // string storing the action command. Passed to switch statement
+        String str = actionEvent.getActionCommand();
+
+        switch (str){
+            case "1":
+                lane1.get(0).setVehLocationX(lane1.get(0).getVehLocationX() + lane1.get(0).getVehSpeed());
+                repaint();
+                break;
+
+            case "2":
+                if((lane2.get(0).getVehLocationX()+vehicleWidth+lane2.get(0).getStopDistance()) < 950) {
+                    lane2.get(0).setVehLocationX(lane2.get(0).getVehLocationX() + lane2.get(0).getVehSpeed());
+                }
+                else{
+                    lane2.get(0).setVehSpeed(0);
+                }
+                repaint();
+                break;
+
+            case "3":
+                if(lane1.get(1).getVehLocationX()+vehicleWidth < (lane1.get(0).getVehLocationX() - lane1.get(0).getStopDistance())) {
+                    if(lane1.get(1).getVehSpeed() == 0){
+                        lane1.get(1).setVehSpeed(3);
+                    }
+                    lane1.get(1).setVehLocationX(lane1.get(1).getVehLocationX() + lane1.get(1).getVehSpeed());
+                }
+                else{
+                    lane1.get(1).setVehSpeed(0);
+                }
+                repaint();
+                break;
+
+            case "4":
+                if(lane2.get(1).getVehLocationX()+vehicleWidth < (lane2.get(0).getVehLocationX() - lane2.get(0).getStopDistance())) {
+                    if(lane2.get(1).getVehSpeed() == 0){
+                        lane2.get(1).setVehSpeed(5);
+                    }
+                    lane2.get(1).setVehLocationX(lane2.get(1).getVehLocationX() + lane2.get(1).getVehSpeed());
+                }
+                else{
+                    lane2.get(1).setVehSpeed(0);
+                }
+                repaint();
+                break;
+
+            case "5":
+                if(lane1.get(2).getVehLocationX()+vehicleWidth < (lane1.get(1).getVehLocationX() - lane1.get(1).getStopDistance())) {
+                    if(lane1.get(2).getVehSpeed() == 0){
+                        lane1.get(2).setVehSpeed(2);
+                    }
+                    lane1.get(2).setVehLocationX(lane1.get(2).getVehLocationX() + lane1.get(2).getVehSpeed());
+                }
+                else{
+                    lane1.get(2).setVehSpeed(0);
+                }
+                repaint();
+                break;
+
+            case "6":
+                if(lane2.get(2).getVehLocationX()+vehicleWidth < (lane2.get(1).getVehLocationX() - lane2.get(1).getStopDistance())) {
+                    if(lane2.get(2).getVehSpeed() == 0){
+                        lane2.get(2).setVehSpeed(3);
+                    }
+                    lane2.get(2).setVehLocationX(lane2.get(2).getVehLocationX() + lane2.get(2).getVehSpeed());
+                }
+                else{
+                    lane2.get(2).setVehSpeed(0);
+                }
+                repaint();
+
+                break;
+
+            case "7":
+                if(lane1.get(3).getVehLocationX()+vehicleWidth < (lane1.get(2).getVehLocationX() - lane1.get(2).getStopDistance())) {
+                    if(lane1.get(3).getVehSpeed() == 0){
+                        lane1.get(3).setVehSpeed(1);
+                    }
+                    lane1.get(3).setVehLocationX(lane1.get(3).getVehLocationX() + lane1.get(3).getVehSpeed());
+                }
+                else{
+                    lane1.get(3).setVehSpeed(0);
+                }
+                repaint();
+                break;
+
+            case "8":
+                if(lane2.get(3).getVehLocationX()+vehicleWidth < (lane2.get(2).getVehLocationX() - lane2.get(2).getStopDistance())) {
+                    if(lane2.get(3).getVehSpeed() == 0){
+                        lane2.get(3).setVehSpeed(1);
+                    }
+                    lane2.get(3).setVehLocationX(lane2.get(3).getVehLocationX() + lane2.get(3).getVehSpeed());
+                }
+                else{
+                    lane2.get(3).setVehSpeed(0);
+                }
+                repaint();
+                break;
         }
     }
+
 }

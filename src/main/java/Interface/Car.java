@@ -1,78 +1,107 @@
 package main.java.Interface;
 
-import java.io.*;
-import java.util.ArrayList;
-
 public class Car implements Constants{
 
-    private int vehLocation;
-    private String vehHeight;
-    private String vehWidth;
-    private String stopDistance;
-    private String sensingDistance;
+    private int vehSpeed;
+    private int vehLocationX;
+    private int vehLocationY;
+    private int vehHeight;
+    private int vehWidth;
     private String laneNumber;
+    private boolean rotate;
+    private int stopDistance;
 
-    Car(int vehLocation, String vehHeight, String vehWidth,
-        String stopDistance, String sensingDistance, String laneNumber) {
-        this.vehLocation = vehLocation;
+
+    public Car(int vehSpeed, int vehLocationX, int vehLocationY, int vehHeight, int vehWidth, String laneNumber, boolean rotate, int stopDistance){
+        this.vehSpeed = vehSpeed;
+        this.vehLocationX = vehLocationX;
+        this.vehLocationY = vehLocationY;
         this.vehHeight = vehHeight;
         this.vehWidth = vehWidth;
-        this.stopDistance = stopDistance;
-        this.sensingDistance = sensingDistance;
         this.laneNumber = laneNumber;
+        this.rotate = rotate;
+        this.stopDistance =  stopDistance;
     }
 
-
+    /**
+     * Vehicle static constructor
+     * Creates instances of vehicles
+     *
+     */
     public static void createVehicleInstances() {
-        for (int i = 0; i < numberOfVehicles; i++) {
-            if (i < 2) {
-                Car vehicle = new Car( 0, Integer.toString(vehicleHeight),
-                        Integer.toString(vehicleWidth), "", "", "First");
-                lane1.add(vehicle);
-            } else {
-                Car vehicle = new Car( 0, Integer.toString(vehicleHeight),
-                        Integer.toString(vehicleWidth), "", "", "Second");
-                lane2.add(vehicle);
-            }
-        }
+        Car vehicle = null;
+        vehicle = new Car(5, 100, firstLaneY, vehicleHeight,
+                vehicleWidth, "First", false, 30);
+        lane1.add(vehicle);
+
+        vehicle = new Car(4, 50, firstLaneY, vehicleHeight,
+                vehicleWidth, "First", false, 30);
+        lane1.add(vehicle);
+
+        vehicle = new Car(3, 0, firstLaneY, vehicleHeight,
+                vehicleWidth, "First", false, 30);
+        lane1.add(vehicle);
+
+        vehicle = new Car(2, 0, firstLaneY, vehicleHeight,
+                vehicleWidth, "First", false, 30);
+        lane1.add(vehicle);
+
+        vehicle = new Car(6, 100, secondLaneY, vehicleHeight,
+                vehicleWidth, "Second", false, 30);
+        lane2.add(vehicle);
+
+        vehicle = new Car(5, 50, secondLaneY, vehicleHeight,
+                vehicleWidth, "Second", false, 30);
+        lane2.add(vehicle);
+
+        vehicle = new Car(4, 0, secondLaneY, vehicleHeight,
+                vehicleWidth, "Second", false, 30);
+        lane2.add(vehicle);
+
+        vehicle = new Car(3, 0, secondLaneY, vehicleHeight,
+                vehicleWidth, "Second", false, 30);
+        lane2.add(vehicle);
     }
 
     //getters and setters
-
-    public int getVehLocation() {
-        return vehLocation;
-    }
-
-    public void setVehLocation(int vehLocation) {
-        this.vehLocation = vehLocation;
-    }
-
-    public String getVehHeight() {
-        return vehHeight;
-    }
-
-    public void setVehHeight(String vehHeight) {
-        this.vehHeight = vehHeight;
-    }
-
-    public String getVehWidth() {
-        return vehWidth;
-    }
-
-    public void setVehWidth(String vehWidth) {
-        this.vehWidth = vehWidth;
-    }
-
-    public String getStopDistance() {
+    public int getStopDistance() {
         return stopDistance;
     }
 
-    public void setStopDistance(String stopDistance) {
+    public void setStopDistance(int stopDistance) {
         this.stopDistance = stopDistance;
     }
 
-    public String getSensingDistance() {
-        return sensingDistance;
+    public int getVehSpeed() {
+        return vehSpeed;
+    }
+
+    public void setVehSpeed(int vehSpeed) {
+        this.vehSpeed = vehSpeed;
+    }
+
+    public int getVehLocationX() {
+        return vehLocationX;
+    }
+
+    public void setVehLocationX(int vehLocationX) {
+        this.vehLocationX = vehLocationX;
+    }
+
+    public int getVehLocationY() {
+        return vehLocationY;
+    }
+
+    public void setVehLocationY(int vehLocationY) {
+        this.vehLocationY = vehLocationY;
+    }
+
+    public int getVehHeight() {
+        return vehHeight;
+    }
+
+    public int getVehWidth() {
+        return vehWidth;
     }
 
     public String getLaneNumber() {
@@ -83,9 +112,11 @@ public class Car implements Constants{
         this.laneNumber = laneNumber;
     }
 
-    public void setSensingDistance(String sensingDistance) {
-        this.sensingDistance = sensingDistance;
+    public boolean isRotate() {
+        return rotate;
+    }
+
+    public void setRotate(boolean rotate) {
+        this.rotate = rotate;
     }
 }
-
-
