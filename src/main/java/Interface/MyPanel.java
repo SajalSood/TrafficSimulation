@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
-public class MyPanel extends JPanel implements Constants, Observer, ActionListener {
+@SuppressWarnings("deprecation")
+public class MyPanel extends JPanel implements Constants, Observer {
 
     private int counter = 0;
     private CarRules rule = new CarRules();
@@ -18,6 +19,8 @@ public class MyPanel extends JPanel implements Constants, Observer, ActionListen
     private Color color; //store the color of the vehicle.
     private String status = statusMsg; //To show the message on the top panel based on the status number.
     private CarSimulation sim = null;
+    private int count = 1;
+    private int index;
 
 
     public void paint(Graphics g) {
@@ -75,12 +78,10 @@ public class MyPanel extends JPanel implements Constants, Observer, ActionListen
 
     //Method to create vehicles in the respective lanes.
     private void drawRectangle(Car vehicle, Color color) {
-
         Rectangle rect = new Rectangle(vehicle.getVehLocationX(), vehicle.getVehLocationY(),
                 vehicle.getVehWidth(), vehicle.getVehHeight());
         g2d.setColor(color);
         g2d.fill(rect);
-
     }
 
 
@@ -88,122 +89,112 @@ public class MyPanel extends JPanel implements Constants, Observer, ActionListen
     public void update(Observable observable, Object o) {
         if (o instanceof CarSimulation) {
             sim = (CarSimulation) o;
-            if(sim.getCtr() == 1) {
-                initTimers();
+            if(sim.getCtr() == count) {
+                //if(count <= 3) {
+                    createInstance();
+                //}
+                updateLocations();
+                repaint();
+                count++;
+            }
+        }
+    }
+
+    private void updateLocations(){
+        for(int i=0; i <lane1.size(); i++){
+            if(i==0){
+                lane1.get(i).setVehLocationX(lane1.get(i).getVehLocationX() + lane1.get(i).getVehSpeed());
+                if(lane1.get(i).getVehLocationX() > frameWidth){
+                    lane1.remove(lane1.get(i));
+                }
+
+            }
+            else{
+                if(lane1.get(i).getVehLocationX()+vehicleWidth < (lane1.get(i-1).getVehLocationX() - lane1.get(i).getStopDistance())) {
+                    if(lane1.get(i).getVehSpeed() == 0){
+                        lane1.get(i).setVehSpeed(8);
+                    }
+                    lane1.get(i).setVehLocationX(lane1.get(i).getVehLocationX() + lane1.get(i).getVehSpeed());
+                }
+                else{
+                    lane1.get(i).setVehSpeed(0);
+                }
+            }
+        }
+
+        for(int i=0; i<lane2.size(); i++){
+            if(i==0){
+                if((lane2.get(i).getVehLocationX()+vehicleWidth+lane2.get(i).getStopDistance()) < 950) {
+                    if(lane2.get(i).getVehSpeed() == 0){
+                        lane2.get(i).setVehSpeed(8);
+                    }
+                    lane2.get(i).setVehLocationX(lane2.get(i).getVehLocationX() + lane2.get(i).getVehSpeed());
+                }
+                else{
+                    lane2.get(i).setVehSpeed(0);
+                    checkIfCarCanMerge(lane2.get(i));
+                }
+            }
+            else{
+                if(lane2.get(i).getVehLocationX()+vehicleWidth < (lane2.get(i-1).getVehLocationX() - lane2.get(i).getStopDistance())) {
+                    if(lane2.get(i).getVehSpeed() == 0){
+                        lane2.get(i).setVehSpeed(8);
+                    }
+                    lane2.get(i).setVehLocationX(lane2.get(i).getVehLocationX() + lane2.get(i).getVehSpeed());
+                }
+                else{
+                    lane2.get(i).setVehSpeed(0);
+                }
+            }
+        }
+    }
+
+    private void checkIfCarCanMerge(Car car){
+        for(int i=0; i<lane1.size(); i++) {
+            int rearSafeDistance = car.getVehLocationX() - 10;
+            int frontSafeDistance = car.getVehLocationX() + vehicleWidth + 10;
+            if(!carExists(rearSafeDistance, frontSafeDistance)){
+                car.setLaneNumber("First");
+                car.setVehLocationY(firstLaneY);
+                car.setStopDistance(lane1StopDistance);
+                car.setVehLocationX(rearSafeDistance+10);
+                car.setVehSpeed(8);
+                lane1.add(getNearCarIndex(rearSafeDistance, frontSafeDistance), car);
+                lane2.remove(car);
+                updateLocations();
+                repaint();
             }
         }
     }
 
 
-    private void initTimers(){
-        for(int i=1; i<=numberOfVehicles; i++) {
-            Timer tm = new Timer(80, this);
-            tm.setActionCommand(Integer.toString(i));
-            timers.add(tm);
-            tm.start();
+    private boolean carExists(int rearLocX, int frontLocX){
+        for(int i =0 ; i<lane1.size(); i++){
+            if(lane1.get(i).getVehLocationX()+vehicleWidth > rearLocX && lane1.get(i).getVehLocationX() < frontLocX)
+            {
+                return true;
+            }
         }
+        return false;
     }
 
-    @Override
-    public void actionPerformed(ActionEvent actionEvent) {
-        // string storing the action command. Passed to switch statement
-        String str = actionEvent.getActionCommand();
-
-        switch (str){
-            case "1":
-                lane1.get(0).setVehLocationX(lane1.get(0).getVehLocationX() + lane1.get(0).getVehSpeed());
-                repaint();
-                break;
-
-            case "2":
-                if((lane2.get(0).getVehLocationX()+vehicleWidth+lane2.get(0).getStopDistance()) < 950) {
-                    lane2.get(0).setVehLocationX(lane2.get(0).getVehLocationX() + lane2.get(0).getVehSpeed());
-                }
-                else{
-                    lane2.get(0).setVehSpeed(0);
-                }
-                repaint();
-                break;
-
-            case "3":
-                if(lane1.get(1).getVehLocationX()+vehicleWidth < (lane1.get(0).getVehLocationX() - lane1.get(0).getStopDistance())) {
-                    if(lane1.get(1).getVehSpeed() == 0){
-                        lane1.get(1).setVehSpeed(8);
-                    }
-                    lane1.get(1).setVehLocationX(lane1.get(1).getVehLocationX() + lane1.get(1).getVehSpeed());
-                }
-                else{
-                    lane1.get(1).setVehSpeed(0);
-                }
-                repaint();
-                break;
-
-            case "4":
-                if(lane2.get(1).getVehLocationX()+vehicleWidth < (lane2.get(0).getVehLocationX() - lane2.get(0).getStopDistance())) {
-                    if(lane2.get(1).getVehSpeed() == 0){
-                        lane2.get(1).setVehSpeed(10);
-                    }
-                    lane2.get(1).setVehLocationX(lane2.get(1).getVehLocationX() + lane2.get(1).getVehSpeed());
-                }
-                else{
-                    lane2.get(1).setVehSpeed(0);
-                }
-                repaint();
-                break;
-
-            case "5":
-                if(lane1.get(2).getVehLocationX()+vehicleWidth < (lane1.get(1).getVehLocationX() - lane1.get(1).getStopDistance())) {
-                    if(lane1.get(2).getVehSpeed() == 0){
-                        lane1.get(2).setVehSpeed(8);
-                    }
-                    lane1.get(2).setVehLocationX(lane1.get(2).getVehLocationX() + lane1.get(2).getVehSpeed());
-                }
-                else{
-                    lane1.get(2).setVehSpeed(0);
-                }
-                repaint();
-                break;
-
-            case "6":
-                if(lane2.get(2).getVehLocationX()+vehicleWidth < (lane2.get(1).getVehLocationX() - lane2.get(1).getStopDistance())) {
-                    if(lane2.get(2).getVehSpeed() == 0){
-                        lane2.get(2).setVehSpeed(10);
-                    }
-                    lane2.get(2).setVehLocationX(lane2.get(2).getVehLocationX() + lane2.get(2).getVehSpeed());
-                }
-                else{
-                    lane2.get(2).setVehSpeed(0);
-                }
-                repaint();
-
-                break;
-
-            case "7":
-                if(lane1.get(3).getVehLocationX()+vehicleWidth < (lane1.get(2).getVehLocationX() - lane1.get(2).getStopDistance())) {
-                    if(lane1.get(3).getVehSpeed() == 0){
-                        lane1.get(3).setVehSpeed(8);
-                    }
-                    lane1.get(3).setVehLocationX(lane1.get(3).getVehLocationX() + lane1.get(3).getVehSpeed());
-                }
-                else{
-                    lane1.get(3).setVehSpeed(0);
-                }
-                repaint();
-                break;
-
-            case "8":
-                if(lane2.get(3).getVehLocationX()+vehicleWidth < (lane2.get(2).getVehLocationX() - lane2.get(2).getStopDistance())) {
-                    if(lane2.get(3).getVehSpeed() == 0){
-                        lane2.get(3).setVehSpeed(10);
-                    }
-                    lane2.get(3).setVehLocationX(lane2.get(3).getVehLocationX() + lane2.get(3).getVehSpeed());
-                }
-                else{
-                    lane2.get(3).setVehSpeed(0);
-                }
-                repaint();
-                break;
+    private int getNearCarIndex(int rearLocX, int frontLocX){
+        int cntr = 0;
+        for(int i =0; i<lane1.size(); i++){
+            if(lane1.get(i).getVehLocationX()+vehicleWidth > rearLocX-lane1StopDistance && lane1.get(i).getVehLocationX() < frontLocX){
+                return i;
+            }
+            cntr++;
         }
+        if(lane2.size() == 1) {
+            return cntr;
+        }
+        return 0;
     }
+
+    private void createInstance(){
+        Car.createVehicleInstances();
+    }
+
 
 }
