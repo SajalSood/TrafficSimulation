@@ -30,35 +30,35 @@ public class Car implements Constants{
      */
     public static void createVehicleInstances() {
         Car vehicle = null;
-        vehicle = new Car(5, 100, firstLaneY, vehicleHeight,
+        vehicle = new Car(8, 0, firstLaneY, vehicleHeight,
                 vehicleWidth, "First", false, 30);
         lane1.add(vehicle);
 
-        vehicle = new Car(4, 50, firstLaneY, vehicleHeight,
+        vehicle = new Car(8, 0, firstLaneY, vehicleHeight,
                 vehicleWidth, "First", false, 30);
         lane1.add(vehicle);
 
-        vehicle = new Car(3, 0, firstLaneY, vehicleHeight,
+        vehicle = new Car(8, 0, firstLaneY, vehicleHeight,
                 vehicleWidth, "First", false, 30);
         lane1.add(vehicle);
 
-        vehicle = new Car(2, 0, firstLaneY, vehicleHeight,
+        vehicle = new Car(8, 0, firstLaneY, vehicleHeight,
                 vehicleWidth, "First", false, 30);
         lane1.add(vehicle);
 
-        vehicle = new Car(6, 100, secondLaneY, vehicleHeight,
+        vehicle = new Car(10, 0, secondLaneY, vehicleHeight,
                 vehicleWidth, "Second", false, 30);
         lane2.add(vehicle);
 
-        vehicle = new Car(5, 50, secondLaneY, vehicleHeight,
+        vehicle = new Car(10, 0, secondLaneY, vehicleHeight,
                 vehicleWidth, "Second", false, 30);
         lane2.add(vehicle);
 
-        vehicle = new Car(4, 0, secondLaneY, vehicleHeight,
+        vehicle = new Car(10, 0, secondLaneY, vehicleHeight,
                 vehicleWidth, "Second", false, 30);
         lane2.add(vehicle);
 
-        vehicle = new Car(3, 0, secondLaneY, vehicleHeight,
+        vehicle = new Car(10, 0, secondLaneY, vehicleHeight,
                 vehicleWidth, "Second", false, 30);
         lane2.add(vehicle);
     }
