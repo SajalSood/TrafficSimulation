@@ -1,4 +1,3 @@
-package main.java.Interface;
 
 public class CarRules implements Constants{
 

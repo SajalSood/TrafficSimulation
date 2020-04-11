@@ -1,4 +1,3 @@
-package main.java.Interface;
 
 import java.util.Observable;
 
