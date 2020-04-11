@@ -1,10 +1,8 @@
-package main.java.Interface;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 
 public class SegmentedRoadView implements Constants, ActionListener {
 
