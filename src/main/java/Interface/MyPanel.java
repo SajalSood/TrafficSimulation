@@ -97,13 +97,13 @@ public class MyPanel extends JPanel implements Constants, Observer {
     public void update(Observable observable, Object o) {
         if (o instanceof CarSimulation) {
             sim = (CarSimulation) o;
-            if (sim.getCtr() % 200 == 0) {
-                Car.createVehicleInstancesLane1();
-            }
-            if (sim.getCtr() % 40 == 0) {
+//            if (sim.getCtr() % 200 == 0) {
+//                Car.createVehicleInstancesLane1();
+//            }
+            if (sim.getCtr() % 50 == 0) {
                 Car.createVehicleInstancesLane2();
             }
-            if (sim.getCtr() % 100 == 0) {
+            if (sim.getCtr() % 20 == 0) {
                 Car.createVehicleInstancesLane3();
             }
 
@@ -116,6 +116,9 @@ public class MyPanel extends JPanel implements Constants, Observer {
         for(int i=0; i<lane1.size(); i++){
             if(i==0){
                 lane1.get(i).setVehLocationX(lane1.get(i).getVehLocationX() + lane1.get(i).getVehSpeed());
+                if(lane1.get(i).getVehLocationX() > frameWidth){
+                    lane1.remove(lane1.get(i));
+                }
             }
             else{
                 if(lane1.get(i).getVehLocationX()+vehicleWidth < (lane1.get(i-1).getVehLocationX() - lane1.get(i).getStopDistance())) {
@@ -184,19 +187,35 @@ public class MyPanel extends JPanel implements Constants, Observer {
             int rearSafeDistance = car.getVehLocationX() - 20;
             int frontSafeDistance = car.getVehLocationX() + vehicleWidth + 20;
             if(!carExists(rearSafeDistance, frontSafeDistance)){
-                car.setLaneNumber("Second");
+
+                if(lane2.size() > 4 && lane1.size() < 1) {
+                    lane1.add(lane1.size(),  moveToLane(lane2.get(4)));
+                }
+
+                    car.setLaneNumber("Second");
                 car.setVehLocationY(secondLaneY);
                 car.setStopDistance(lane2StopDistance);
                 car.setVehLocationX(rearSafeDistance+10);
                 car.setVehSpeed(8);
                 lane2.add(getNearCarIndex(rearSafeDistance, frontSafeDistance), car);
                 lane3.remove(car);
+                
                 updateLocations();
                 repaint();
             }
         }
     }
 
+    private Car moveToLane(Car car){
+        car.setLaneNumber("First");
+        car.setVehLocationY(firstLaneY);
+        car.setStopDistance(lane1StopDistance);
+        car.setVehSpeed(10);
+        car.setVehLocationX(lane2.get(4).getVehLocationX()+50);
+        lane2.remove(car);
+
+        return car;
+    }
 
     private boolean carExists(int rearLocX, int frontLocX){
         for(int i =0 ; i<lane2.size(); i++){
@@ -231,7 +250,6 @@ public class MyPanel extends JPanel implements Constants, Observer {
                 max = i;
             }
         }
-
         return list.get(max);
     }
 
