@@ -39,7 +39,6 @@ public class MyPanel extends JPanel implements Constants, Observer, ActionListen
         g2d.fillRect(950, 160, 30, 30);
 
 
-
         Stroke dashedLane = new BasicStroke(3, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{9}, 0);
         g2d.setColor(Color.getHSBColor(148,93,20));
         g2d.setStroke(dashedLane);
@@ -75,28 +74,12 @@ public class MyPanel extends JPanel implements Constants, Observer, ActionListen
     }
 
     //Method to create vehicles in the respective lanes.
-    private void drawRectangle(Car vehicle, Color color){
+    private void drawRectangle(Car vehicle, Color color) {
 
-//        AffineTransform tx = new AffineTransform();
-//        if(vehicle.isRotate()){
-//            //rotate the vehicle and prepare to turn.
-//            int dx = -20;
-//            int dy = 40;
-//            tx.translate(vehicle.getVehLocationX() + dx, vehicle.getVehLocationY() + dy);
-//            tx.rotate(80.1);
-//            Rectangle rect = new Rectangle(dx, dy, vehicle.getVehWidth(), vehicle.getVehHeight());
-//            g2d.setTransform(tx);
-//            g2d.setColor(color);
-//            g2d.fill(rect);
-//
-//        }else {
-//            //rotate back to move in a straight line
-//            tx.translate(0, 0);
-            Rectangle rect = new Rectangle(vehicle.getVehLocationX(), vehicle.getVehLocationY(),
-                    vehicle.getVehWidth(), vehicle.getVehHeight());
-//            g2d.setTransform(tx);
-            g2d.setColor(color);
-            g2d.fill(rect);
+        Rectangle rect = new Rectangle(vehicle.getVehLocationX(), vehicle.getVehLocationY(),
+                vehicle.getVehWidth(), vehicle.getVehHeight());
+        g2d.setColor(color);
+        g2d.fill(rect);
 
     }
 
@@ -105,8 +88,7 @@ public class MyPanel extends JPanel implements Constants, Observer, ActionListen
     public void update(Observable observable, Object o) {
         if (o instanceof CarSimulation) {
             sim = (CarSimulation) o;
-            if(sim.getCtr() == 1)
-            {
+            if(sim.getCtr() == 1) {
                 initTimers();
             }
         }
@@ -146,7 +128,7 @@ public class MyPanel extends JPanel implements Constants, Observer, ActionListen
             case "3":
                 if(lane1.get(1).getVehLocationX()+vehicleWidth < (lane1.get(0).getVehLocationX() - lane1.get(0).getStopDistance())) {
                     if(lane1.get(1).getVehSpeed() == 0){
-                        lane1.get(1).setVehSpeed(3);
+                        lane1.get(1).setVehSpeed(8);
                     }
                     lane1.get(1).setVehLocationX(lane1.get(1).getVehLocationX() + lane1.get(1).getVehSpeed());
                 }
@@ -159,7 +141,7 @@ public class MyPanel extends JPanel implements Constants, Observer, ActionListen
             case "4":
                 if(lane2.get(1).getVehLocationX()+vehicleWidth < (lane2.get(0).getVehLocationX() - lane2.get(0).getStopDistance())) {
                     if(lane2.get(1).getVehSpeed() == 0){
-                        lane2.get(1).setVehSpeed(5);
+                        lane2.get(1).setVehSpeed(10);
                     }
                     lane2.get(1).setVehLocationX(lane2.get(1).getVehLocationX() + lane2.get(1).getVehSpeed());
                 }
@@ -172,7 +154,7 @@ public class MyPanel extends JPanel implements Constants, Observer, ActionListen
             case "5":
                 if(lane1.get(2).getVehLocationX()+vehicleWidth < (lane1.get(1).getVehLocationX() - lane1.get(1).getStopDistance())) {
                     if(lane1.get(2).getVehSpeed() == 0){
-                        lane1.get(2).setVehSpeed(2);
+                        lane1.get(2).setVehSpeed(8);
                     }
                     lane1.get(2).setVehLocationX(lane1.get(2).getVehLocationX() + lane1.get(2).getVehSpeed());
                 }
@@ -185,7 +167,7 @@ public class MyPanel extends JPanel implements Constants, Observer, ActionListen
             case "6":
                 if(lane2.get(2).getVehLocationX()+vehicleWidth < (lane2.get(1).getVehLocationX() - lane2.get(1).getStopDistance())) {
                     if(lane2.get(2).getVehSpeed() == 0){
-                        lane2.get(2).setVehSpeed(3);
+                        lane2.get(2).setVehSpeed(10);
                     }
                     lane2.get(2).setVehLocationX(lane2.get(2).getVehLocationX() + lane2.get(2).getVehSpeed());
                 }
@@ -199,7 +181,7 @@ public class MyPanel extends JPanel implements Constants, Observer, ActionListen
             case "7":
                 if(lane1.get(3).getVehLocationX()+vehicleWidth < (lane1.get(2).getVehLocationX() - lane1.get(2).getStopDistance())) {
                     if(lane1.get(3).getVehSpeed() == 0){
-                        lane1.get(3).setVehSpeed(1);
+                        lane1.get(3).setVehSpeed(8);
                     }
                     lane1.get(3).setVehLocationX(lane1.get(3).getVehLocationX() + lane1.get(3).getVehSpeed());
                 }
@@ -212,7 +194,7 @@ public class MyPanel extends JPanel implements Constants, Observer, ActionListen
             case "8":
                 if(lane2.get(3).getVehLocationX()+vehicleWidth < (lane2.get(2).getVehLocationX() - lane2.get(2).getStopDistance())) {
                     if(lane2.get(3).getVehSpeed() == 0){
-                        lane2.get(3).setVehSpeed(1);
+                        lane2.get(3).setVehSpeed(10);
                     }
                     lane2.get(3).setVehLocationX(lane2.get(3).getVehLocationX() + lane2.get(3).getVehSpeed());
                 }
