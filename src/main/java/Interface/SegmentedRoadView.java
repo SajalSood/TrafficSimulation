@@ -45,7 +45,6 @@ public class SegmentedRoadView implements Constants, ActionListener {
     }
 
     public static void main(String[] args) {
-        Car.createVehicleInstances();
         SegmentedRoadView myApp = new SegmentedRoadView();
     }
 

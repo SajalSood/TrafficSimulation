@@ -36,14 +36,20 @@ public interface Constants {
      int vehicleHeight = 25;
      int firstLaneY = 120;
      int secondLaneY = 160;
+     int thirdLaneY = 210;
      int numberOfVehicles = 8;
      int frameWidth = 1400;
      int frameHeight = 800;
-     int roadHeight = 100;
+     int roadHeight = 150;
      int turningRightDistanceLane1 = 1330;
      int turningRightDistanceLane2 = 1242;
+     int lane1StopDistance = 80;
+     int lane2StopDistance = 80;
+     int lane3StopDistance = 100;
+
 
      ArrayList<Car> lane1 = new ArrayList<Car>();
      ArrayList<Car> lane2 = new ArrayList<Car>();
+     ArrayList<Car> lane3 = new ArrayList<Car>();
 }
 

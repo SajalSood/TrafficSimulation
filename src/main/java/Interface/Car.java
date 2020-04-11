@@ -27,42 +27,28 @@ public class Car implements Constants{
      * Creates instances of vehicles
      *
      */
-    public static void createVehicleInstances() {
-        Car vehicle = null;
-        vehicle = new Car(8, 0, firstLaneY, vehicleHeight,
-                vehicleWidth, "First", false, 30);
+    public static void createVehicleInstancesLane1() {
+        Car vehicle = new Car(10, -40, firstLaneY, vehicleHeight,
+                vehicleWidth, "First", false, lane1StopDistance);
         lane1.add(vehicle);
-
-        vehicle = new Car(8, 0, firstLaneY, vehicleHeight,
-                vehicleWidth, "First", false, 30);
-        lane1.add(vehicle);
-
-        vehicle = new Car(8, 0, firstLaneY, vehicleHeight,
-                vehicleWidth, "First", false, 30);
-        lane1.add(vehicle);
-
-        vehicle = new Car(8, 0, firstLaneY, vehicleHeight,
-                vehicleWidth, "First", false, 30);
-        lane1.add(vehicle);
-
-        vehicle = new Car(10, 0, secondLaneY, vehicleHeight,
-                vehicleWidth, "Second", false, 30);
-        lane2.add(vehicle);
-
-        vehicle = new Car(10, 0, secondLaneY, vehicleHeight,
-                vehicleWidth, "Second", false, 30);
-        lane2.add(vehicle);
-
-        vehicle = new Car(10, 0, secondLaneY, vehicleHeight,
-                vehicleWidth, "Second", false, 30);
-        lane2.add(vehicle);
-
-        vehicle = new Car(10, 0, secondLaneY, vehicleHeight,
-                vehicleWidth, "Second", false, 30);
-        lane2.add(vehicle);
     }
 
-    //getters and setters
+    public static void createVehicleInstancesLane2() {
+        Car vehicle = new Car(8, -40, secondLaneY, vehicleHeight,
+                vehicleWidth, "Second", false, lane2StopDistance);
+        lane2.add(vehicle);
+
+    }
+
+    public static void createVehicleInstancesLane3() {
+        Car vehicle = new Car(8, -40, thirdLaneY, vehicleHeight,
+                vehicleWidth, "Third", false, lane3StopDistance);
+        lane3.add(vehicle);
+
+    }
+
+
+        //getters and setters
     public int getStopDistance() {
         return stopDistance;
     }
